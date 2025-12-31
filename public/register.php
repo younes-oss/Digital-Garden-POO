@@ -1,5 +1,9 @@
 <?php
+
+require_once "../src/Service/AuthService.php";
+
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +20,7 @@
     </h1>
 
     <form method="POST" class="space-y-4">
-
+        <input hidden type="text" name="type" value="register">
         <div>
             <label class="block text-sm font-medium text-gray-700">
                 Username

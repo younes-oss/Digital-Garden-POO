@@ -1,5 +1,7 @@
 <?php
 
+require_once "../src/Service/AuthService.php";
+
 ?>
 
 <!DOCTYPE html>
@@ -20,7 +22,7 @@
         </h1>
 
         <form method="POST" class="space-y-4">
-
+            <input hidden type="text" name="type" value="login">
             <div>
                 <label class="block text-sm font-medium text-gray-700">
                     Username or Email

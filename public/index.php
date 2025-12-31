@@ -23,13 +23,13 @@
         </p>
 
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="auth/register.php"
+            <a href="register.php"
                class="px-6 py-3 bg-green-600 text-white rounded-lg font-semibold
                       hover:bg-green-700 transition">
                 Sign Up
             </a>
 
-            <a href="auth/login.php"
+            <a href="login.php"
                class="px-6 py-3 border-2 border-green-600 text-green-600 rounded-lg
                       font-semibold hover:bg-green-50 transition">
                 Login

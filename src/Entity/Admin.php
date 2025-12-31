@@ -7,7 +7,7 @@ include_once 'User.php';
     public function __construct($id, $username, $email, $password)
     {
         return parent::__construct($id, $username, $email, $password);
-        $this->status = 'approved';
+        $this->status = parent::APPROVED_STATUS;
     }
 
     
