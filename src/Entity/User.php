@@ -27,6 +27,11 @@ abstract class User {
         array_push($this->roles,$role);
     }
 
+    public function __get($property){
+
+        return $this->$property;
+    }
+
 }
 
 
