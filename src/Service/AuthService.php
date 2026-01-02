@@ -1,7 +1,9 @@
 <?php
 session_start();
+include_once "./Repository/UserRepository";
 
 $error = "";
+$userRepo = new UserRepository();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
     $login = trim($_POST["login"]);
@@ -10,8 +12,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
     if (empty($login) || empty($password)) {
         $error = "All fields are required";
      } else {
-
-        $userRepo = new UserRepository();
         $user = $userRepo->findByEmail($login);
         $isAdmin = false;
         if(!is_null($user)){
@@ -45,13 +45,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "register") {
-    echo '<h1>register</h1>';
+
+    $errors = [];
+
     $username = trim($_POST["username"]);
     $email    = trim($_POST["email"]);
     $password = $_POST["password"];
     $confirm  = $_POST["confirm"];
 
-    //validation
+    // Validation
     if (empty($username) || strlen($username) < 3) {
         $errors[] = "Username must be at least 3 characters";
     }
@@ -68,38 +70,36 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "register") {
         $errors[] = "Passwords do not match";
     }
 
-    //Check if username or email already exists
-    // if (empty($errors)) {
-    //     $sql = "SELECT id FROM users WHERE username = ? OR email = ?";
-    //     $stmt = mysqli_prepare($conn, $sql);
-    //     mysqli_stmt_bind_param($stmt, "ss", $username, $email);
-    //     mysqli_stmt_execute($stmt);
-    //     mysqli_stmt_store_result($stmt);
+    // Check if email already exists
+    if ($userRepo->findByEmail($email)) {
+        $errors[] = "Email already registered";
+    }
 
-    //     if (mysqli_stmt_num_rows($stmt) > 0) {
-    //         $errors[] = "Username or email already exists";
-    //     }
-    // }
+    // If validation passes
+    if (empty($errors)) {
 
-    // //Insert user
-    // if (empty($errors)) {
-    //     $hashed = password_hash($password, PASSWORD_DEFAULT);
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    //     $sql = "INSERT INTO users (username, email, password)
-    //             VALUES (?, ?, ?)";
-    //     $stmt = mysqli_prepare($conn, $sql);
-    //     mysqli_stmt_bind_param($stmt, "sss", $username, $email, $hashed);
+        $userId = $userRepo->create([
+            'username' => $username,
+            'email'    => $email,
+            'password' => $hashedPassword
+        ]);
 
-    //     if (mysqli_stmt_execute($stmt)) {
-    //         $_SESSION["user_id"] = mysqli_insert_id($conn);
-    //         $_SESSION["username"] = $username;
-    //         $_SESSION["login_time"] = date("Y-m-d H:i:s");
+        if ($userId) {
 
-    //         header("Location: dashboard.php");
-    //         exit;
-    //     } else {
-    //         $errors[] = "Registration failed";
-    //     }
-    // }
+            // Auto-login after register
+            $_SESSION["user_id"] = $userId;
+            $_SESSION["username"] = $username;
+            $_SESSION["login_time"] = time();
+
+            header("Location: ../public/dashboard.php");
+            exit;
+
+        } else {
+            $errors[] = "Registration failed. Please try again.";
+        }
+    }
 }
+
 
