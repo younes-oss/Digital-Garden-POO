@@ -23,9 +23,12 @@ abstract class User {
         $this->status = $status;
     }
 
-    public function addRole($role){
-        array_push($this->roles,$role);
+    public function addRole($role)
+{
+    if (!in_array($role, $this->roles)) {
+        $this->roles[] = $role;
     }
+}
 
     public function __get($property){
 

@@ -2,7 +2,7 @@
 
 class ThemeRepository
 {
-    private PDO $conn;
+    private $conn;
 
     public function __construct()
     {
@@ -17,49 +17,73 @@ class ThemeRepository
         );
         $stmt->execute([$userId]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $themes = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $themes[] = new Theme(
+                $row['id'],
+                $row['name'],
+                $row['color'],
+                $row['user_id']
+            );
+        }
+
+        return $themes;
     }
 
-    public function find($id,$userId)
+    public function save($theme)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM themes WHERE id = ? AND user_id = ?"
-        );
-        $stmt->execute([$id, $userId]);
+        if ($theme->id) {
+            return $this->update($theme);
+        }
 
-        $theme = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $theme ?: null;
+        return $this->insert($theme);
     }
 
-    public function create($name, $color, $userId)
+    private function insert($theme)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO themes (name, color, user_id) VALUES (?, ?, ?)"
+            "INSERT INTO themes (name, color, user_id)
+             VALUES (?, ?, ?)"
         );
 
-        if ($stmt->execute([$name, $color, $userId])) {
-            return (int)$this->conn->lastInsertId();
+        if ($stmt->execute([
+            $theme->name,
+            $theme->color,
+            $theme->user_id
+        ])) {
+            $theme->id = $this->conn->lastInsertId();
+            return true;
         }
 
         return false;
     }
 
-    public function update($id, $name,$color, $userId)
+    private function update($theme)
     {
         $stmt = $this->conn->prepare(
-            "UPDATE themes SET name = ?, color = ?
+            "UPDATE themes
+             SET name = ?, color = ?
              WHERE id = ? AND user_id = ?"
         );
 
-        return $stmt->execute([$name, $color, $id, $userId]);
+        return $stmt->execute([
+            $theme->name,
+            $theme->color,
+            $theme->id,
+            $theme->user_id
+        ]);
     }
 
-    public function delete($id, $userId)
+    public function delete($theme)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM themes WHERE id = ? AND user_id = ?"
         );
 
-        return $stmt->execute([$id, $userId]);
+        return $stmt->execute([
+            $theme->id,
+            $theme->user_id
+        ]);
     }
 }

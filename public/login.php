@@ -1,12 +1,11 @@
 <?php
 
-require_once "../src/Service/AuthService.php";
+require_once "C:\laragon\www\Digital-Garden-POO\src\Service\AuthService.php";
 
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Login | Digital Garden</title>
@@ -41,11 +40,15 @@ require_once "../src/Service/AuthService.php";
                     required>
             </div>
 
-            <?php if (!empty($error)): ?>
-                <div class="text-red-600 text-sm bg-red-100 p-2 rounded">
-                    <?= $error ?>
-                </div>
-            <?php endif; ?>
+            <?php if (!empty($errors)): ?>
+            <div class="bg-red-100 text-red-600 p-3 rounded text-sm">
+                <ul class="list-disc pl-5">
+                    <?php foreach ($errors as $err): ?>
+                        <li><?= $err ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            </div>
+        <?php endif; ?>
 
             <button type="submit"
                 class="w-full bg-green-600 text-white py-2 rounded-lg font-semibold hover:bg-green-700 transition">

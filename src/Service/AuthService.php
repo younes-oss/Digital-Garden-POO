@@ -1,8 +1,9 @@
 <?php
 session_start();
-include_once "./Repository/UserRepository";
+include_once "../src/Repository/UserRepository.php";
+include_once "../src\Entity\User.php";
 
-$error = "";
+$error = [];
 $userRepo = new UserRepository();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
@@ -10,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
     $password = $_POST["password"];
 
     if (empty($login) || empty($password)) {
-        $error = "All fields are required";
+        $error[] = "All fields are required";
      } else {
         $user = $userRepo->findByEmail($login);
         $isAdmin = false;
@@ -22,8 +23,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
                 $_SESSION["username"] = $user->username;
                 $_SESSION["login_time"] = time();
 
-                foreach ($user->roles as $role) {
-                if($role->title === "admin") $isAdmin = true;
+                
+                $isAdmin = in_array('admin', $user->roles);
 
                 if($isAdmin){
                 header("Location: ../admin/dashboard.php");
@@ -36,13 +37,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
             }
 
             } else {
-                $error = "Invalid credentials";
+                $error[] = "Invalid credentials";
             }
 
              
         }
      }
-}
+
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "register") {
 
@@ -79,12 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "register") {
     if (empty($errors)) {
 
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        $userId = $userRepo->create([
-            'username' => $username,
-            'email'    => $email,
-            'password' => $hashedPassword
-        ]);
+        $user = new Gardener(null,$username,$email,$hashedPassword);
+        $userId = $userRepo->saveUser($user);
 
         if ($userId) {
 
@@ -101,5 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "register") {
         }
     }
 }
+
 
 

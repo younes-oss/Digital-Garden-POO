@@ -13,15 +13,25 @@ class NoteRepository
     public function getAllByUser($userId)
     {
         $stmt = $this->conn->prepare(
-            "SELECT n.*, t.name AS theme_name, t.color
-             FROM notes n
-             JOIN themes t ON n.theme_id = t.id
-             WHERE n.user_id = ?
-             ORDER BY n.created_at DESC"
+            "SELECT * FROM notes WHERE user_id = ? ORDER BY created_at DESC"
         );
         $stmt->execute([$userId]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $notes = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $notes[] = new Note(
+                $row['id'],
+                $row['title'],
+                $row['content'],
+                $row['importance'],
+                $row['user_id'],
+                $row['theme_id'],
+                $row['created_at']
+            );
+        }
+
+        return $notes;
     }
 
     public function getByTheme($themeId, $userId)
@@ -33,41 +43,54 @@ class NoteRepository
         );
         $stmt->execute([$themeId, $userId]);
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $notes = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $notes[] = new Note(
+                $row['id'],
+                $row['title'],
+                $row['content'],
+                $row['importance'],
+                $row['user_id'],
+                $row['theme_id'],
+                $row['created_at']
+            );
+        }
+
+        return $notes;
     }
 
-    public function find($id, $userId)
+    public function save($note)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM notes WHERE id = ? AND user_id = ?"
-        );
-        $stmt->execute([$id, $userId]);
+        if ($note->id) {
+            return $this->update($note);
+        }
 
-        $note = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $note ? $note : null;
+        return $this->insert($note);
     }
 
-    public function create($title, $content, $importance, $themeId, $userId)
+    private function insert($note)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO notes (title, content, importance, theme_id, user_id)
+            "INSERT INTO notes (title, content, importance, user_id, theme_id)
              VALUES (?, ?, ?, ?, ?)"
         );
 
         if ($stmt->execute([
-            $title,
-            $content,
-            $importance,
-            $themeId,
-            $userId
+            $note->title,
+            $note->content,
+            $note->importance,
+            $note->user_id,
+            $note->theme_id
         ])) {
-            return $this->conn->lastInsertId();
+            $note->id = $this->conn->lastInsertId();
+            return true;
         }
 
         return false;
     }
 
-    public function update($id, $title, $content, $importance, $themeId, $userId)
+    private function update($note)
     {
         $stmt = $this->conn->prepare(
             "UPDATE notes
@@ -76,21 +99,25 @@ class NoteRepository
         );
 
         return $stmt->execute([
-            $title,
-            $content,
-            $importance,
-            $themeId,
-            $id,
-            $userId
+            $note->title,
+            $note->content,
+            $note->importance,
+            $note->theme_id,
+            $note->id,
+            $note->user_id
         ]);
     }
 
-    public function delete($id, $userId)
+    public function delete($note)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM notes WHERE id = ? AND user_id = ?"
         );
 
-        return $stmt->execute([$id, $userId]);
+        return $stmt->execute([
+            $note->id,
+            $note->user_id
+        ]);
     }
 }
+    
