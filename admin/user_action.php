@@ -10,13 +10,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $userRepo = new UserRepository();
 
-    if ($action === 'approve') {
+    if ($action === 'approve' || $action === 'unblock') {
         $userRepo->updateStatus($userId, 'approved');
     }
 
     if ($action === 'block') {
         $userRepo->updateStatus($userId, 'blocked');
     }
+    
 
     header('Location: dashboard.php');
     exit;

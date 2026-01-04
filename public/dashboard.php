@@ -22,70 +22,82 @@ if (!$user) {
 ?>
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <title>Dashboard | Digital Garden</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
 </head>
-<body class="min-h-screen bg-green-50 flex items-center justify-center">
 
-<div class="bg-white w-full max-w-xl p-8 rounded-2xl shadow-lg text-center">
 
-    <h1 class="text-3xl font-bold text-green-600 mb-2">
-        🌱 Bienvenue <?= htmlspecialchars($user->username) ?>
-    </h1>
 
-    <p class="text-gray-600 mb-4">
-        Date d’inscription :
-        <span class="font-medium">
-            <?= date("d/m/Y", strtotime($user->created_at)) ?>
-        </span>
-    </p>
+<body class="min-h-screen bg-green-50">
 
-    <p class="text-gray-600 mb-8">
-        Heure de connexion :
-        <span class="font-medium">
-            <?= date("H:i:s", $_SESSION["login_time"]) ?>
-        </span>
-    </p>
+    <?php
+        require_once "../includes/header.php"
+    ?>
+    <div class="flex items-center justify-center">
+        <div class="bg-white w-full max-w-xl p-8 rounded-2xl shadow-lg text-center ">
 
-    <?php if ($user->status === 'blocked'): ?>
+        <h1 class="text-3xl font-bold text-green-600 mb-2">
+            🌱 Bienvenue <?= htmlspecialchars($user->username) ?>
+        </h1>
 
-        <div class="bg-red-100 text-red-700 p-4 rounded-lg font-semibold">
-            🚫 Votre compte a été bloqué par un administrateur.
-        </div>
+        <p class="text-gray-600 mb-4">
+            Date d’inscription :
+            <span class="font-medium">
+                <?= date("d/m/Y", strtotime($user->created_at)) ?>
+            </span>
+        </p>
 
-    <?php elseif ($user->status === 'waiting'): ?>
+        <p class="text-gray-600 mb-8">
+            Heure de connexion :
+            <span class="font-medium">
+                <?= date("H:i:s", $_SESSION["login_time"]) ?>
+            </span>
+        </p>
 
-        <div class="bg-yellow-100 text-yellow-700 p-4 rounded-lg font-semibold">
-            ⏳ Votre compte est en attente de validation par un administrateur.
-        </div>
+        <?php if ($user->status === 'blocked'): ?>
 
-    <?php else: ?>
+            <div class="bg-red-100 text-red-700 p-4 rounded-lg font-semibold">
+                🚫 Votre compte a été bloqué par un administrateur.
+            </div>
 
-        <div class="space-y-4">
-            <a href="theme.php"
-               class="block w-full bg-green-600 text-white py-3 rounded-lg font-semibold
+        <?php elseif ($user->status === 'waiting'): ?>
+
+            <div class="bg-yellow-100 text-yellow-700 p-4 rounded-lg font-semibold">
+                ⏳ Votre compte est en attente de validation par un administrateur.
+            </div>
+
+        <?php else: ?>
+
+            <div class="space-y-4">
+                <a href="theme.php"
+                    class="block w-full bg-green-600 text-white py-3 rounded-lg font-semibold
                       hover:bg-green-700 transition">
-                🌱 Gérer mes Thèmes
-            </a>
+                    🌱 Gérer mes Thèmes
+                </a>
 
-            <a href="Note.php"
-               class="block w-full bg-blue-600 text-white py-3 rounded-lg font-semibold
+                <a href="Note.php"
+                    class="block w-full bg-blue-600 text-white py-3 rounded-lg font-semibold
                       hover:bg-blue-700 transition">
-                🍃 Gérer mes Notes
-            </a>
-        </div>
+                    🍃 Gérer mes Notes
+                </a>
+            </div>
 
-    <?php endif; ?>
+        <?php endif; ?>
 
-    <a href="logout.php"
-       class="block w-full mt-6 bg-red-500 text-white py-3 rounded-lg font-semibold
+        <a href="logout.php"
+            class="block w-full mt-6 bg-red-500 text-white py-3 rounded-lg font-semibold
               hover:bg-red-600 transition">
-        🚪 Déconnexion
-    </a>
+            🚪 Déconnexion
+        </a>
 
-</div>
+    </div>
+    </div>
+    
 
 </body>
+
 </html>

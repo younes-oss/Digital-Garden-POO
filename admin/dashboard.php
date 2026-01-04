@@ -14,6 +14,9 @@ $gardeners = $userRepo->getGardeners();
     <title>Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+<?php 
+require_once "../includes/header.php";
+?>
 <body class="bg-gray-100 min-h-screen">
 
 <div class="max-w-6xl mx-auto py-10 px-4">
@@ -76,10 +79,14 @@ $gardeners = $userRepo->getGardeners();
                         </form>
 
                     <?php else: ?>
-                        <button
-                            class="w-full bg-gray-300 text-gray-600 py-2 rounded-lg cursor-not-allowed">
-                            Blocked
-                        </button>
+                        <form method="post" action="user_action.php">
+                            <input type="hidden" name="user_id" value="<?= $user->id ?>">
+                            <input type="hidden" name="action" value="unblock">
+                            <button
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg transition">
+                                Unblock
+                            </button>
+                        </form>
                     <?php endif; ?>
                 </div>
 
