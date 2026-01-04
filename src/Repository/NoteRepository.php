@@ -25,9 +25,7 @@ class NoteRepository
                 $row['title'],
                 $row['content'],
                 $row['importance'],
-                $row['user_id'],
-                $row['theme_id'],
-                $row['created_at']
+                $row['theme_id']
             );
         }
 
@@ -51,28 +49,26 @@ class NoteRepository
                 $row['title'],
                 $row['content'],
                 $row['importance'],
-                $row['user_id'],
-                $row['theme_id'],
-                $row['created_at']
+                $row['theme_id']
             );
         }
 
         return $notes;
     }
 
-    public function save($note)
+    public function save($note,$userId)
     {
         if ($note->id) {
-            return $this->update($note);
+            return $this->update($note,$userId);
         }
 
-        return $this->insert($note);
+        return $this->insert($note,$userId);
     }
 
-    private function insert($note)
+    private function insert($note,$userId)
     {
         $stmt = $this->conn->prepare(
-            "INSERT INTO notes (title, content, importance, user_id, theme_id)
+            "INSERT INTO notes (title, content, importance, theme_id, user_id)
              VALUES (?, ?, ?, ?, ?)"
         );
 
@@ -80,8 +76,8 @@ class NoteRepository
             $note->title,
             $note->content,
             $note->importance,
-            $note->user_id,
-            $note->theme_id
+            $note->theme_id,
+            $userId
         ])) {
             $note->id = $this->conn->lastInsertId();
             return true;
@@ -90,7 +86,7 @@ class NoteRepository
         return false;
     }
 
-    private function update($note)
+    private function update($note,$userId)
     {
         $stmt = $this->conn->prepare(
             "UPDATE notes
@@ -104,19 +100,19 @@ class NoteRepository
             $note->importance,
             $note->theme_id,
             $note->id,
-            $note->user_id
+            $userId
         ]);
     }
 
-    public function delete($note)
+    public function delete($noteId , $userId)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM notes WHERE id = ? AND user_id = ?"
         );
 
         return $stmt->execute([
-            $note->id,
-            $note->user_id
+            $noteId,
+            $userId
         ]);
     }
 }

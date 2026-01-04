@@ -1,5 +1,7 @@
 <?php
 
+require_once 'UserRepository.php';
+
 class ThemeRepository
 {
     private $conn;
@@ -18,6 +20,7 @@ class ThemeRepository
         $stmt->execute([$userId]);
 
         $themes = [];
+
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $themes[] = new Theme(

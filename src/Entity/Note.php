@@ -7,13 +7,16 @@ class Note{
     private $content;
     private $importance;
     private $created_at;
+    private $theme_id;
 
 
-    public function __construct($id,$title,$content,$importance)
+    public function __construct($id,$title,$content,$importance,$theme_id)
     {
+       $this->id =$id;
        $this->title = $title;
        $this->content = $content;
        $this->importance = $importance;
+       $this->theme_id = $theme_id;
 
     }
 

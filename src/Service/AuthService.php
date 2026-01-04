@@ -3,7 +3,7 @@ session_start();
 include_once "../src/Repository/UserRepository.php";
 include_once "../src\Entity\User.php";
 
-$error = [];
+$errors = [];
 $userRepo = new UserRepository();
 
 if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
     $password = $_POST["password"];
 
     if (empty($login) || empty($password)) {
-        $error[] = "All fields are required";
+        $errors[] = "All fields are required";
      } else {
         $user = $userRepo->findByEmail($login);
         $isAdmin = false;
@@ -35,9 +35,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "login") {
              }
              exit;
             }
+            else {
+                $errors[] = "Invalid credentials";
+            }
 
             } else {
-                $error[] = "Invalid credentials";
+                $errors[] = "Invalid credentials";
             }
 
              
@@ -82,9 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && $_POST["type"] === "register") {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
         $user = new Gardener(null,$username,$email,$hashedPassword);
         $userId = $userRepo->saveUser($user);
-
         if ($userId) {
-
             // Auto-login after register
             $_SESSION["user_id"] = $userId;
             $_SESSION["username"] = $username;
