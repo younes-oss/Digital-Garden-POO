@@ -73,13 +73,13 @@ if (!$user) {
         <?php else: ?>
 
             <div class="space-y-4">
-                <a href="theme.php"
+                <a href="themes.php"
                     class="block w-full bg-green-600 text-white py-3 rounded-lg font-semibold
                       hover:bg-green-700 transition">
                     🌱 Gérer mes Thèmes
                 </a>
 
-                <a href="Note.php"
+                <a href="notes.php"
                     class="block w-full bg-blue-600 text-white py-3 rounded-lg font-semibold
                       hover:bg-blue-700 transition">
                     🍃 Gérer mes Notes

@@ -30,12 +30,12 @@ $isAdmin = in_array("admin", $user->roles);
          
         <nav class="flex items-center space-x-6 text-gray-600 font-medium">
             <?php if(!$isAdmin && $user->status === "approved" ) : ?>
-                <a href="../public/theme.php"
+                <a href="../public/themes.php"
                class="hover:text-green-600 transition">
                 Themes
             </a>
 
-            <a href="../public/Note.php"
+            <a href="../public/notes.php"
                class="hover:text-green-600 transition">
                 Notes
             </a>

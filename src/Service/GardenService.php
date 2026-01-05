@@ -48,7 +48,7 @@ if ($feature === 'theme') {
 
         $themeRepo->save($theme);
 
-        header("Location: ../../public/theme.php");
+        header("Location: ../../public/themes.php");
         exit;
     }
 
@@ -64,7 +64,7 @@ if ($feature === 'theme') {
 
         $themeRepo->delete($theme);
 
-        header("Location: ../../public/theme.php");
+        header("Location: ../../public/themes.php");
         exit;
     }
 }
@@ -90,7 +90,7 @@ if ($feature === 'note') {
 
         $noteRepo->save($note,$userId);
 
-        header("Location: ../../public/Note.php");
+        header("Location: ../../public/notes.php");
         exit;
     }
 
@@ -99,7 +99,7 @@ if ($feature === 'note') {
 
         $noteRepo->delete($_POST['id'],$userId);
 
-        header("Location: ../../public/Note.php");
+        header("Location: ../../public/notes.php");
         exit;
     }
 }
