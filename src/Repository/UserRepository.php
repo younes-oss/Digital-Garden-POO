@@ -1,9 +1,9 @@
 <?php
 
-require_once "C:\laragon\www\Digital-Garden-POO\config\Database.php";
-require_once "C:\laragon\www\Digital-Garden-POO\src\Entity\User.php";
-require_once "C:\laragon\www\Digital-Garden-POO\src\Entity\Gardener.php";
-require_once "C:\laragon\www\Digital-Garden-POO\src\Entity\Admin.php";
+require_once "./config/Database.php";
+require_once "./src/Entity/User.php";
+require_once "./src/Entity/Gardener.php";
+require_once "./src/Entity/Admin.php";
 
 class UserRepository
 {
