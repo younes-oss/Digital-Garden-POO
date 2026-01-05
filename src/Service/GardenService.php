@@ -14,14 +14,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = $_SESSION['user_id'];
 
-// if ($user['status'] === 'blocked') {
-//     die("❌ Your account is blocked by an admin.");
-// }
-
-// if ($user['status'] === 'waiting') {
-//     die("⏳ Please wait for admin approval.");
-// }
-
 $themeRepo = new ThemeRepository();
 $noteRepo  = new NoteRepository();
 
