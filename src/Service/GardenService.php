@@ -80,7 +80,7 @@ if ($feature === 'note') {
             $_POST['theme_id'],
         );
 
-        $noteRepo->save($note,$userId);
+        $noteRepo->save($note, $userId);
 
         header("Location: ../../public/notes.php");
         exit;
@@ -89,8 +89,21 @@ if ($feature === 'note') {
     // DELETE
     if ($action === 'delete') {
 
-        $noteRepo->delete($_POST['id'],$userId);
+        $noteRepo->delete($_POST['id'], $userId);
 
+        header("Location: ../../public/notes.php");
+        exit;
+    }
+    if ($action === 'filter') {
+
+        if (!empty($_POST['theme_id'])) {
+            
+            $notes = $noteRepo->getByTheme($_POST['theme_id'], $userId);
+            // var_dump($notes);
+            // exit(0);
+            $_SESSION['notes'] = $notes;
+        }
+        
         header("Location: ../../public/notes.php");
         exit;
     }

@@ -10,11 +10,15 @@ include_once 'User.php';
         $this->status = parent::APPROVED_STATUS;
     }
 
-    
+    public static  function test(){
+
+    }
 
 }
 
-
-
+$user = new Admin(3,'UII','gfhg',"jhg");
+$user->test();
 
 ?>
+
+
