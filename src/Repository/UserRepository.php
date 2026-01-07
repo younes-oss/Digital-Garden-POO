@@ -1,9 +1,9 @@
 <?php
 
-require_once "./config/Database.php";
-require_once "./src/Entity/User.php";
-require_once "./src/Entity/Gardener.php";
-require_once "./src/Entity/Admin.php";
+require_once __DIR__ . "/../../config/Database.php";
+require_once __DIR__ . "/../Entity/User.php";
+require_once __DIR__ . "/../Entity/Gardener.php";
+require_once __DIR__ . "/../Entity/Admin.php";
 
 class UserRepository
 {

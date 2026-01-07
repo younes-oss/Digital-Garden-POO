@@ -13,9 +13,9 @@ class NoteRepository
     public function getAllByUser($userId)
     {
         $stmt = $this->conn->prepare(
-            "SELECT * FROM notes WHERE user_id = ? ORDER BY created_at DESC"
+            "SELECT * FROM notes WHERE user_id = ? and is_deleted = ? ORDER BY created_at DESC"
         );
-        $stmt->execute([$userId]);
+        $stmt->execute([$userId,0]);
 
         $notes = [];
 
@@ -108,6 +108,18 @@ class NoteRepository
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM notes WHERE id = ? AND user_id = ?"
+        );
+
+        return $stmt->execute([
+            $noteId,
+            $userId
+        ]);
+    }
+
+    public function archive($noteId , $userId)
+    {
+        $stmt = $this->conn->prepare(
+            "UPDATE notes set is_deleted = 1 WHERE id = ? AND user_id = ?"
         );
 
         return $stmt->execute([
