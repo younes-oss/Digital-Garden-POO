@@ -107,3 +107,5 @@ CREATE TABLE theme_favorite (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (theme_id) REFERENCES themes(id) ON DELETE CASCADE
 );
+
+ALTER TABLE `themes` ADD COLUMN `is_public` INT DEFAULT 0;
