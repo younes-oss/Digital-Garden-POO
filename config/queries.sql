@@ -97,3 +97,13 @@ CREATE TABLE user_role (
 );
 
 
+
+ALTER TABLE `notes` ADD COLUMN `is_public` INT DEFAULT 0;
+
+CREATE TABLE theme_favorite (
+    user_id INT NOT NULL,
+    theme_id INT NOT NULL,
+    PRIMARY KEY (user_id, theme_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (theme_id) REFERENCES themes(id) ON DELETE CASCADE
+);
