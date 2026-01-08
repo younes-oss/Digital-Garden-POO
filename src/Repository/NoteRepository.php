@@ -6,8 +6,7 @@ class NoteRepository
 
     public function __construct()
     {
-        $db = new Database();
-        $this->conn = $db->connect();
+        $this->conn = Database::getInstance();
     }
 
     public function getAllByUser($userId)

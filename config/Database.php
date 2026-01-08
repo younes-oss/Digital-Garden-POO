@@ -5,18 +5,25 @@ class Database {
     private $dbname = 'garden';
     private $username = 'root';
     private $password = '';
+    private static $instance = null;
+    private $conn;
 
-    public function connect(){
+    public function __construct(){
         try{
-            $conn = new PDO('mysql:host=localhost;dbname=garden',$this->username , $this->password);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            return $conn;
+            $this->conn = new PDO('mysql:host=localhost;dbname=garden',$this->username , $this->password);
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         catch (PDOException $e){
             echo "Connection failed: " . $e->getMessage();
-        }
-            
+        }   
 
+    }
+
+    public static function getInstance() {
+        if (self::$instance === null) {
+            self::$instance = new Database();
+        }
+        return self::$instance->conn;
     }
 
 }

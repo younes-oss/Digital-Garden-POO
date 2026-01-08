@@ -14,7 +14,7 @@ class UserRepository
     public function __construct()
     {
 
-        $this->conn = (new Database())->connect();
+        $this->conn = Database::getInstance();
     }
 
     public function saveUser($user)
