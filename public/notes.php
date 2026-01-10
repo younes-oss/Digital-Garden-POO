@@ -38,6 +38,9 @@ if (isset($_SESSION['notes'])) {
 <body class="bg-green-50">
     <?php
     require_once "../includes/header.php";
+    if (isset($_SESSION['share'])) {
+        require_once 'modal.php';
+    }
     ?>
     <div class="bg-green-50 min-h-screen p-8">
         <div class="max-w-5xl mx-auto ">
@@ -115,13 +118,28 @@ if (isset($_SESSION['notes'])) {
                                 Importance <?= $note->importance ?>
                             </span>
 
-                            <!-- DELETE -->
-                            <form method="POST" action="../src/service/gardenService.php">
-                                <input type="hidden" name="feature" value="note">
-                                <input type="hidden" name="action" value="delete">
-                                <input type="hidden" name="id" value="<?= $note->id ?>">
-                                <button class="text-red-600">Delete</button>
-                            </form>
+                            <?php if ($noteRepo->getUserByNote($note->id)===$userId): ?>
+                                <div>
+                                <form method="POST" action="../src/service/gardenService.php">
+                                    <input type="hidden" name="feature" value="note">
+                                    <input type="hidden" name="action" value="delete">
+                                    <input type="hidden" name="id" value="<?= $note->id ?>">
+                                    <button class="text-red-600">Delete</button>
+                                </form>
+
+                                <form method="POST" action="../src/service/gardenService.php">
+                                    <input type="hidden" name="feature" value="note">
+                                    <input type="hidden" name="action" value="share">
+                                    <input type="hidden" name="noteId" value="<?= $note->id ?>">
+                                    <button class="text-red-600">share</button>
+                                </form>
+                            </div>
+                            <?php else: ?>
+                                <p class="text-gray-600">shared note</p>
+                            <?php endif; ?>
+
+
+
                         </div>
                     </div>
                 <?php endforeach; ?>

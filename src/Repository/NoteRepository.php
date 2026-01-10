@@ -1,5 +1,8 @@
 <?php
 
+include_once '../config/Database.php';
+include_once '../src/Entity/Note.php';
+
 class NoteRepository
 {
     private $conn;
@@ -11,10 +14,13 @@ class NoteRepository
 
     public function getAllByUser($userId)
     {
-        $stmt = $this->conn->prepare(
-            "SELECT * FROM notes WHERE user_id = ? and is_deleted = ? ORDER BY created_at DESC"
-        );
-        $stmt->execute([$userId,0]);
+        $stmt = $this->conn->prepare("SELECT DISTINCT n.*
+                FROM notes n
+                LEFT JOIN shared_notes sn ON n.id = sn.note_id
+                WHERE n.is_deleted = ?
+                AND (n.user_id = ? OR sn.user_id = ?)
+");
+        $stmt->execute([0,$userId, $userId]);
 
         $notes = [];
 
@@ -55,16 +61,49 @@ class NoteRepository
         return $notes;
     }
 
-    public function save($note,$userId)
+    public function getOne($id)
     {
-        if ($note->id) {
-            return $this->update($note,$userId);
-        }
 
-        return $this->insert($note,$userId);
+        $stmt = $this->conn->prepare(
+            "SELECT * FROM notes
+             where id = ?"
+        );
+        $stmt->execute([$id]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $note = new Note(
+                $row['id'],
+                $row['title'],
+                $row['content'],
+                $row['importance'],
+                $row['theme_id']
+            );
+        }
+        return $note;
     }
 
-    private function insert($note,$userId)
+    public function getUserByNote($noteId)
+    {
+        $stmt = $this->conn->prepare(
+            "SELECT user_id FROM notes
+             where id = ?"
+        );
+        $stmt->execute([$noteId]);
+
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['user_id'];
+    }
+
+    public function save($note, $userId)
+    {
+        if ($note->id) {
+            return $this->update($note, $userId);
+        }
+
+        return $this->insert($note, $userId);
+    }
+
+    private function insert($note, $userId)
     {
         $stmt = $this->conn->prepare(
             "INSERT INTO notes (title, content, importance, theme_id, user_id)
@@ -85,7 +124,7 @@ class NoteRepository
         return false;
     }
 
-    private function update($note,$userId)
+    private function update($note, $userId)
     {
         $stmt = $this->conn->prepare(
             "UPDATE notes
@@ -103,7 +142,7 @@ class NoteRepository
         ]);
     }
 
-    public function delete($noteId , $userId)
+    public function delete($noteId, $userId)
     {
         $stmt = $this->conn->prepare(
             "DELETE FROM notes WHERE id = ? AND user_id = ?"
@@ -115,7 +154,7 @@ class NoteRepository
         ]);
     }
 
-    public function archive($noteId , $userId)
+    public function archive($noteId, $userId)
     {
         $stmt = $this->conn->prepare(
             "UPDATE notes set is_deleted = 1 WHERE id = ? AND user_id = ?"
@@ -126,5 +165,29 @@ class NoteRepository
             $userId
         ]);
     }
+
+    public function share($noteId, $user_id, $owner_id)
+    {
+        $privacyStmt = $this->conn->prepare(
+            "UPDATE notes set is_public = 1 WHERE id = ?"
+        );
+
+        $privacyStmt->execute([
+            $noteId
+        ]);
+
+        $pivotStmt = $this->conn->prepare(
+            "INSERT into shared_notes(user_id, note_id, owner_id)
+                values(?,?,?)"
+        );
+
+        return $pivotStmt->execute([
+            $user_id,
+            $noteId,
+            $owner_id
+        ]);
+    }
 }
-    
+
+// $repo = new NoteRepository();
+// var_dump($repo->getAllByUser(2));

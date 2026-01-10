@@ -1,4 +1,5 @@
 <?php
+require_once '../Entity/Note.php';
 session_start();
 
 require_once 'C:\laragon\www\Digital-Garden-POO\config\Database.php';
@@ -107,4 +108,33 @@ if ($feature === 'note') {
         header("Location: ../../public/notes.php");
         exit;
     }
+
+    if ($action === 'share') {
+
+        $_SESSION['share'] = [
+                'note_id' => $_POST['noteId']
+            ];
+        
+        header("Location: ../../public/notes.php");
+        exit;
+    }
+    if ($action === 'closeModal') {
+
+        unset($_SESSION['share']);
+        
+        header("Location: ../../public/notes.php");
+        exit;
+    }
+    if ($action === 'submitShare') {
+        unset($_SESSION['share']);
+        $noteId = $_POST['note_id'];
+        $note = $noteRepo->getOne($noteId);
+        $users = $_POST['users'];
+        foreach ($users as $userId) {
+            $noteRepo->share($note->id, $userId, $_SESSION['user_id']);
+        }
+        header("Location: ../../public/notes.php");
+        exit;
+    }
+
 }

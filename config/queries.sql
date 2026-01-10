@@ -109,3 +109,13 @@ CREATE TABLE theme_favorite (
 );
 
 ALTER TABLE `themes` ADD COLUMN `is_public` INT DEFAULT 0;
+
+CREATE TABLE shared_notes (
+    user_id INT NOT NULL,
+    note_id INT NOT NULL,
+    owner_id INT NOT NULL,
+    PRIMARY KEY (user_id, note_id, owner_id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE,
+    FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE
+);
